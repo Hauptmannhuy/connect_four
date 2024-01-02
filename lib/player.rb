@@ -1,3 +1,4 @@
+require_relative 'game.rb'
 class Player
   attr_reader :name
 
@@ -7,6 +8,12 @@ class Player
   end
 
   def setup_player
-    nil
+    set_name
   end
+
+  def set_name
+    
+
+  end
+  
 end

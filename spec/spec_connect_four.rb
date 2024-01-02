@@ -21,17 +21,45 @@ end
   subject(:game_set){ described_class.new }
 
   context "When it's called" do
-    it "Sends message to setup_player twice" do
-     player_instance_1 = game_set.instance_variable_get(:@player_1)
-     player_instance_2 = game_set.instance_variable_get(:@player_2)
-      expect(player_instance_1).to receive(:setup_player).once
-      expect(player_instance_2).to receive(:setup_player).once
+    it "Sends message to #greetings twice" do
+      expect(game_set).to receive(:greetings).twice
       game_set.set_players
+    end
+  end
+end
+
+  describe "#greetings" do
+  subject(:game_greeting){ described_class.new }
+  context "When it's called" do
+    it "sends message to #setup_player once" do
+    player_instance = game_greeting.instance_variable_get(:@player_1)
+    expect(player_instance).to receive(:setup_player).once
+    game_greeting.greetings(player_instance)
+    end
+  end
+  end
+
+  describe "#greeting_player" do
+    subject(:game_greeting){ described_class.new }
+  context "When no player specifed" do
+    it 'greets first player and asks for his name' do
+      greeting = 'Hello, player 1, type your name.'
+      expect(game_greeting).to receive(:puts).with(greeting)
+      game_greeting.greeting_player
     end
   end
 end
   
 end
+
+describe Player do
+
+  describe "#set_name" do
+  subject(:player){ described_class.new }
+  
+    end
+  end
+
 
 
 # 1. Initialize class Player that has name and color-marker attribute

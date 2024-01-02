@@ -11,7 +11,16 @@ class Game
   end
 
   def set_players
-   player_1.setup_player
-   player_2.setup_player
+   greetings(player_1)
+   greetings(player_2)
+  end
+
+  def greetings(player)
+    greeting_player
+    player.setup_player
+  end
+
+  def greeting_player
+    puts "Hello, player #{player_1.name == nil ? '1' : '2'}, type your name."
   end
 end
