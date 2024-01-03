@@ -3,6 +3,7 @@ require_relative 'board'
 
 class Game
   attr_reader :player_1, :player_2, :board
+  
 
   def initialize(player_1 = Player.new, player_2 = Player.new, board = Board.new)
     @player_1 = player_1
@@ -24,3 +25,7 @@ class Game
     puts "Hello, player #{player_1.name == nil ? '1' : '2'}, type your name."
   end
 end
+
+game = Game.new
+
+

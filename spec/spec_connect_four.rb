@@ -56,14 +56,41 @@ describe Player do
 
   describe "#set_name" do
   subject(:player){ described_class.new }
-  
+    context "When no player is specified" do
+      before do
+        allow(player).to receive(:gets).and_return('Player1')
+      end
+      it "changes instance variable name from nil to user input" do
+        expect{ player.set_name }.to change { player.instance_variable_get(:@name) }.from(nil).to('Player1')
+      end
+    end
+    context "When player 1 is specified and user trying to input duplicate name and then correct name" do
+      before do
+        Player.class_variable_get(:@@taken_names) << 'Player1'
+        allow(player).to receive(:gets).and_return('Player1','Player2')
+      end
+      it "throws an error message once and then passes iteration" do
+        error_message = 'You cannot choose name of the first player!'
+        expect(player).to receive(:puts).with(error_message).once
+        player.set_name
+      end
+    end
     end
   end
 
 
-
-# 1. Initialize class Player that has name and color-marker attribute
-# 2. Initialize Game class that has core logic of the game
-# 3. Initialize Board class that creating board and change it cells in process of the game
-
-# 1.1 When initializing 
+  describe Board do
+    describe "#player_move" do
+      subject(:board){ described_class.new }
+      context "When user is trying to drop a circle to specific cell" do
+        before do
+          allow(board).to receive(:gets).and_return('1')
+        end
+      it "replaces white circle with player's specific circle color" do
+        board.player_move
+        board_cell = board.instance_variable_get(:@grid)
+        expect(board_cell[0][0]).to eq('circle')
+      end
+    end
+  end
+  end
