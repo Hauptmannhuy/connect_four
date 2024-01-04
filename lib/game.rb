@@ -21,6 +21,15 @@ class Game
     player.setup_player
   end
 
+  def turn_order
+   move_status = self.board.move_status
+   move_announcment(move_status)
+  end
+
+  def move_announcment(move_status)
+    move_status == false ? "It's first player turn!" : "It's second player turn!"
+  end
+
   def greeting_player
     puts "Hello, player #{player_1.name == nil ? '1' : '2'}, type your name."
   end

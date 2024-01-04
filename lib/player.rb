@@ -24,5 +24,7 @@ class Player
   def verify_name(name)
     return name if !@@taken_names.include?(name)
   end
+
+  
   
 end

@@ -49,7 +49,19 @@ end
     end
   end
 end
+
+  describe "#move_announcment" do
+  subject(:game_announcment){ described_class.new }
+  context "When move status is false" do
+    it "promts first player to make his move" do
+      result = game_announcment.move_announcment(false)
+        expect(result).to eq("It's first player turn!")
   
+    end
+  end
+end
+
+
 end
 
 describe Player do
@@ -82,14 +94,27 @@ describe Player do
   describe Board do
     describe "#player_move" do
       subject(:board){ described_class.new }
-      context "When user is trying to drop a circle to specific cell" do
+      context "When grid is all empty and user is trying to drop a circle to specific cell" do
         before do
           allow(board).to receive(:gets).and_return('1')
         end
       it "replaces white circle with player's specific circle color" do
         board.player_move
         board_cell = board.instance_variable_get(:@grid)
-        expect(board_cell[0][0]).to eq('circle')
+        expect(board_cell[0][0]).to eq('0')
+      end
+    end
+    context "When grid is all empty and move status is false and player moves once" do
+      before do
+        allow(board).to receive(:gets).and_return('2')
+      end
+      it "it drops a circle to specific cell" do
+        board.player_move
+        board_cell = board.instance_variable_get(:@grid)
+        expect(board_cell[0][1]).to eq('0')
+      end
+      it 'changes move_status to true' do
+        expect{ board.player_move }.to change {  board.instance_variable_get(:@move_status) }.from(false).to(true)
       end
     end
   end
