@@ -94,27 +94,70 @@ describe Player do
   describe Board do
     describe "#player_move" do
       subject(:board){ described_class.new }
+      first_players_symbol = "\u{25CF}".blue
+      second_player_symbol = "\u{25CF}".red
       context "When grid is all empty and user is trying to drop a circle to specific cell" do
         before do
+          allow(board).to receive(:puts)
           allow(board).to receive(:gets).and_return('1')
         end
       it "replaces white circle with player's specific circle color" do
         board.player_move
         board_cell = board.instance_variable_get(:@grid)
-        expect(board_cell[0][0]).to eq('0')
+        expect(board_cell[0][0]).to eq(first_players_symbol)
       end
     end
-    context "When grid is all empty and move status is false and player moves once" do
+    context "When grid is all empty and move status is false and player moves" do
       before do
+        allow(board).to receive(:puts)
         allow(board).to receive(:gets).and_return('2')
       end
-      it "it drops a circle to specific cell" do
+      it "it drops a circle to specified cell" do
         board.player_move
         board_cell = board.instance_variable_get(:@grid)
-        expect(board_cell[0][1]).to eq('0')
+        expect(board_cell[0][1]).to eq(first_players_symbol)
       end
       it 'changes move_status to true' do
-        expect{ board.player_move }.to change {  board.instance_variable_get(:@move_status) }.from(false).to(true)
+        expect{ board.player_move }.to change { board.instance_variable_get(:@move_status) }.from(false).to(true)
+      end
+    end
+    context "When grid is all empty and move status is true and player moves" do
+      before do
+        allow(board).to receive(:puts)
+        allow(board).to receive(:gets).and_return('3')
+
+      end
+      it "it drops a circle to specified cell" do
+        board.instance_variable_set(:@move_status, true)
+        board.player_move
+        board_cell = board.instance_variable_get(:@grid)
+        expect(board_cell[0][2]).to eq(second_player_symbol)
+      end
+      it "changes move_status to false" do
+        board.instance_variable_set(:@move_status, true)
+        expect{ board.player_move }.to change { board.instance_variable_get(:@move_status) }.from(true).to(false)
+      end
+    end
+    context "When grid has one filled cell in specific column and move status is true and user is trying to drop a circle to the same column" do
+      before do
+        allow(board).to receive(:puts)
+        allow(board).to receive(:gets).and_return('1')
+        board.instance_variable_set(:@move_status, true)
+        change_grid = board.instance_variable_get(:@grid)
+        change_grid[0][0] = first_players_symbol
+        board.instance_variable_set(:@grid, change_grid)
+      end
+      it "drops a circle upon another circle" do
+        board.player_move
+      board_cell = board.instance_variable_get(:@grid)
+      expect(board_cell[1][0]).to eq(second_player_symbol)
+      end
+    end
+    context "When user is trying to drop a circle to already filled column" do
+      it "throws an error message and asks to select another column" do
+        before do
+          
+        end
       end
     end
   end
