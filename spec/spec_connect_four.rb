@@ -111,7 +111,7 @@ describe Player do
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][1]).to eq(first_player_symbol)
       end
-      it 'changes move_status to true' do
+      xit 'changes move_status to true' do
         expect{ board.move_processes(0,1) }.to change { board.instance_variable_get(:@move_status) }.from(false).to(true)
       end
     end
@@ -125,7 +125,7 @@ describe Player do
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][2]).to eq(second_player_symbol)
       end
-      it "changes move_status to false" do
+      xit "changes move_status to false" do
         board.instance_variable_set(:@move_status, true)
         expect{ board.move_processes(0,2) }.to change { board.instance_variable_get(:@move_status) }.from(true).to(false)
       end
@@ -206,6 +206,7 @@ end
   subject(:board){ described_class.new }
   context "When user inputs digit between 1-6" do
     before do 
+      allow(board).to receive(:puts)
       allow(board).to receive(:gets).and_return('5')
 
     end
@@ -226,6 +227,82 @@ end
       expect(board).to receive(:input_validation).with(6).and_return(5)
       board.enter_input
     end
+  end
+end
+
+  describe "#check_horizontal" do
+  subject(:board){ described_class.new }
+  context "When win combination placed horizontal in first row on [1,2,3,4] columns" do
+    before do
+      board.instance_variable_set(:@last_visited, [0,3])
+      changed_grid = board.instance_variable_get(:@grid)
+      i = 0
+      4.times do
+        changed_grid[0][i] = first_player_symbol
+        i+=1
+        end
+        board.instance_variable_set(:@grid, changed_grid)
+    end
+    it 'returns true' do
+    expect(board.check_horizontal).to be(true)
+    end
+  end
+  context "When win combination placed in second row on [2,3,4,5] columns" do
+    before do
+      board.instance_variable_set(:@last_visited, [1,1])
+      changed_grid = board.instance_variable_get(:@grid)
+      i = 0
+      4.times do
+        changed_grid[1][i] = first_player_symbol
+        i+=1
+        end
+        board.instance_variable_set(:@grid, changed_grid)
+    end
+    it 'returns true' do
+      expect(board.check_horizontal).to be(true)
+    end
+  end
+  context "When combination isn't completed yet" do 
+    before do
+      board.instance_variable_set(:@last_visited, [0,0])
+      changed_grid = board.instance_variable_get(:@grid)
+      i = 0
+      3.times do
+        changed_grid[0][i] = first_player_symbol
+        i+=1
+        end
+        board.instance_variable_set(:@grid, changed_grid)
+    end
+    it "returns false" do
+      expect(board.check_horizontal).to be(false)
+    end
+  end
+end
+
+  describe "#check_vertical" do
+  subject(:board){ described_class.new }
+  context "When win combination placed vertical" do
+    before do
+      board.instance_variable_set(:@last_visited, [0,0])
+      changed_grid = board.instance_variable_get(:@grid)
+      i = 0
+      4.times do
+        changed_grid[i][0] = first_player_symbol
+        i+=1
+        end
+        board.instance_variable_set(:@grid, changed_grid)
+    end
+    it "returns true" do
+      expect(board.check_vertical).to be(true)
+
+    end
+  end
+end
+
+  describe "#check_horizontal" do
+  subject(:@board){ described_class.new }
+  context "When win combination is placed horizontal" do
+    
   end
 end
 

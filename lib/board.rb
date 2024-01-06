@@ -9,6 +9,7 @@ class Board
     @second_player_symbol = "\u{25CF}".red
     @grid = Array.new(6){ Array.new(6) { @empty_circle } }
     @move_status = false
+    @last_visited
   end
 
   def display_grid
@@ -34,7 +35,8 @@ class Board
     loop do
     if grid[y][x] == @empty_circle
       grid[y][x] = @move_status == false ? @first_player_symbol : @second_player_symbol
-      switch_status
+      @last_visited = [y,x]
+      # switch_status
       return
     else
       y+=1
@@ -78,20 +80,39 @@ end
   def test
     changed_grid = self.instance_variable_get(:@grid)
     i = 0
-    6.times do
-      changed_grid[i][0] = @first_player_symbol
+    3.times do
+      changed_grid[0][i] = @first_player_symbol
       i+=1
       end
     self.instance_variable_set(:@grid, changed_grid)
     
   end
 
+  def check_horizontal
+    y,x = @last_visited
+    grid = @grid
+    marker = @move_status == false ? @first_player_symbol : @second_player_symbol
+    return true if grid[y][x+1] == marker && grid[y][x+2] == marker && grid[y][x+3] == marker
+    return true if grid[y][x-1] == marker && grid[y][x+1] == marker && grid[y][x+2] == marker
+    return true if grid[y][x-2] == marker && grid[y][x-1] == marker && grid[y][x+1] == marker
+    return true if grid[y][x-3] == marker && grid[y][x-2] == marker && grid[y][x-1] == marker
+    false
+  end
+
+  def check_vertical
+    y,x = @last_visited
+    grid = @grid
+    marker = @move_status == false ? @first_player_symbol : @second_player_symbol
+    return true if grid[y+1][x] == marker && grid[y+2][x] == marker && grid[y+3][x] == marker
+    false
+  end
+  
 end
 
-# board = Board.new
+board = Board.new
 
 
 
 
-# board.player_move
-# board.display_grid
+board.player_move
+board.display_grid
