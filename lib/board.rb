@@ -26,18 +26,43 @@ class Board
 
   def player_move
     puts 'Pick column'
-    x = gets.chomp.to_i
     y = 0   
     loop do
-      if grid[y][x-1] == @empty_circle
-        grid[y][x-1] = @move_status == false ? @first_players_symbol : @second_player_symbol
-        switch_status
-        return
-      else
-        y+=1
-      end
+      x = gets.chomp.to_i
+      move = move_processes(y,x)
+      return move if !move.nil?
+
     end
   end
 
-  
+  def move_processes(y,x)
+    if grid[y][x-1] == @empty_circle
+      grid[y][x-1] = @move_status == false ? @first_players_symbol : @second_player_symbol
+      switch_status
+      return
+    else
+      y+=1
+    end
+end
+
+  def input_validation(input)
+   
+    input = input-1
+    if !column_full?(input)
+        return input
+      else
+        puts 'This column is already full!'
+      end
+  end
+
+  def column_full?(num)
+    array = []
+    i = 0
+    6.times do
+      array << @grid[i][num]
+      i+=1
+      end
+       array.all?{| el | el != @empty_circle}
+  end
+
 end
