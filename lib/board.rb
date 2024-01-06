@@ -5,7 +5,7 @@ class Board
 
   def initialize
     @empty_circle = "\u{25CB}"
-    @first_players_symbol = "\u{25CF}".blue
+    @first_player_symbol = "\u{25CF}".blue
     @second_player_symbol = "\u{25CF}".red
     @grid = Array.new(6){ Array.new(6) { @empty_circle } }
     @move_status = false
@@ -25,25 +25,35 @@ class Board
   end
 
   def player_move
-    puts 'Pick column'
     y = 0   
-    loop do
-      x = gets.chomp.to_i
-      move = move_processes(y,x)
-      return move if !move.nil?
-
-    end
+    x = enter_input 
+    move_processes(y,x)
   end
 
   def move_processes(y,x)
-    if grid[y][x-1] == @empty_circle
-      grid[y][x-1] = @move_status == false ? @first_players_symbol : @second_player_symbol
+    loop do
+    if grid[y][x] == @empty_circle
+      grid[y][x] = @move_status == false ? @first_player_symbol : @second_player_symbol
       switch_status
       return
     else
       y+=1
     end
+  end
 end
+
+  def enter_input
+    loop do
+      puts "Select column."
+      input = gets.chomp.to_i
+      if input.between?(1,6)
+      verify_input = input_validation(input)
+      return verify_input if verify_input
+      else
+        puts "Input should only be between 1-6!"
+      end
+    end
+  end
 
   def input_validation(input)
    
@@ -65,4 +75,23 @@ end
        array.all?{| el | el != @empty_circle}
   end
 
+  def test
+    changed_grid = self.instance_variable_get(:@grid)
+    i = 0
+    6.times do
+      changed_grid[i][0] = @first_player_symbol
+      i+=1
+      end
+    self.instance_variable_set(:@grid, changed_grid)
+    
+  end
+
 end
+
+# board = Board.new
+
+
+
+
+# board.player_move
+# board.display_grid

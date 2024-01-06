@@ -99,7 +99,7 @@ describe Player do
       context "When grid is all empty and user is trying to drop a circle to specific cell" do
       
       it "replaces white circle with player's specific circle color" do
-        board.move_processes(0,1)
+        board.move_processes(0,0)
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][0]).to eq(first_player_symbol)
       end
@@ -107,12 +107,12 @@ describe Player do
     context "When grid is all empty and move status is false and player moves" do
     
       it "it drops a circle to specified cell" do
-        board.move_processes(0,2)
+        board.move_processes(0,1)
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][1]).to eq(first_player_symbol)
       end
       it 'changes move_status to true' do
-        expect{ board.move_processes(0,2) }.to change { board.instance_variable_get(:@move_status) }.from(false).to(true)
+        expect{ board.move_processes(0,1) }.to change { board.instance_variable_get(:@move_status) }.from(false).to(true)
       end
     end
     context "When grid is all empty and move status is true and player moves" do
@@ -121,13 +121,13 @@ describe Player do
 
      end
       it "it drops a circle to specified cell" do
-        board.move_processes(0,3)
+        board.move_processes(0,2)
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][2]).to eq(second_player_symbol)
       end
       it "changes move_status to false" do
         board.instance_variable_set(:@move_status, true)
-        expect{ board.move_processes(0,3) }.to change { board.instance_variable_get(:@move_status) }.from(true).to(false)
+        expect{ board.move_processes(0,2) }.to change { board.instance_variable_get(:@move_status) }.from(true).to(false)
       end
     end
     context "When grid has one filled cell in specific column and move status is true and user is trying to drop a circle to the same column" do
@@ -139,7 +139,7 @@ describe Player do
         board.instance_variable_set(:@grid, change_grid)
       end
       it "drops a circle upon another circle" do
-        board.move_processes(1,1)
+        board.move_processes(1,0)
       board_cell = board.instance_variable_get(:@grid)
       expect(board_cell[1][0]).to eq(second_player_symbol)
       end
@@ -202,10 +202,31 @@ context "When column is full" do
   end
 end
 
-#   describe "#verify_input" do
-#   context "" do
+  describe "#enter_input" do
+  subject(:board){ described_class.new }
+  context "When user inputs digit between 1-6" do
+    before do 
+      allow(board).to receive(:gets).and_return('5')
 
-#   end
-# end
+    end
+    it "sends message to column full?" do
+      expect(board).to receive(:input_validation).with(5).and_return(4)
+      board.enter_input
+    end
+  end
+  context "When user inputs incorrect digit and correct" do
+    before do 
+      allow(board).to receive(:puts)
+      allow(board).to receive(:gets).and_return('7','6')
+
+    end
+    error_message = "Input should only be between 1-6!"
+    it "outputs error_message once and then sends message to column full?" do
+      expect(board).to receive(:puts).with(error_message).once
+      expect(board).to receive(:input_validation).with(6).and_return(5)
+      board.enter_input
+    end
+  end
+end
 
 end
