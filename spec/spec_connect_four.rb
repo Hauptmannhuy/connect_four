@@ -168,6 +168,7 @@ end
 
 describe "#column_full?" do
 subject(:board){ described_class.new }
+  
 context "When column is full" do
   before do
     changed_grid = board.instance_variable_get(:@grid)
@@ -218,10 +219,10 @@ end
   context "When user inputs incorrect digit and correct" do
     before do 
       allow(board).to receive(:puts)
-      allow(board).to receive(:gets).and_return('7','6')
+      allow(board).to receive(:gets).and_return('8','6')
 
     end
-    error_message = "Input should only be between 1-6!"
+    error_message = "Input should only be between 1-7!"
     it "outputs error_message once and then sends message to column full?" do
       expect(board).to receive(:puts).with(error_message).once
       expect(board).to receive(:input_validation).with(6).and_return(5)
@@ -299,11 +300,94 @@ end
   end
 end
 
-  describe "#check_horizontal" do
-  subject(:@board){ described_class.new }
-  context "When win combination is placed horizontal" do
-    
+  describe "#check_diagonal" do
+  subject(:board){ described_class.new }
+  context "When win combination is placed in left-bottom corner" do
+    before do
+      board.instance_variable_set(:@last_visited, [0,0])
+      changed_grid = board.instance_variable_get(:@grid)
+      y = 0
+      x = 0
+      4.times do
+        changed_grid[y][x] = first_player_symbol
+        y+=1
+        x+=1
+        end
+        board.instance_variable_set(:@grid, changed_grid)
+      end
+        it "returns true" do
+          expect(board.check_diagonal).to be(true)
+        end
+    end
+    context "When win combination is placed in right-bottom corner" do
+      before do
+        board.instance_variable_set(:@last_visited, [0,6])
+        changed_grid = board.instance_variable_get(:@grid)
+        y = 0
+        x = 6
+        4.times do
+          changed_grid[y][x] = first_player_symbol
+          y+=1
+          x-=1
+          end
+          board.instance_variable_set(:@grid, changed_grid)
+      end
+      it "returns true" do
+        expect(board.check_diagonal).to be(true)
+      end
+    end
+    context "When win combination is placed in right-top corner" do
+      before do
+        board.instance_variable_set(:@last_visited, [5,6])
+        changed_grid = board.instance_variable_get(:@grid)
+        y = 5
+        x = 6
+        4.times do
+          changed_grid[y][x] = first_player_symbol
+          y-=1
+          x-=1
+          end
+          board.instance_variable_set(:@grid, changed_grid)
+      end
+      it "returns true" do
+        expect(board.check_diagonal).to be(true)
+      end
+    end
+    context "When combination is placed near center but not completed" do
+      before do
+        board.instance_variable_set(:@last_visited, [2,2])
+        changed_grid = board.instance_variable_get(:@grid)
+        y = 0
+        x = 0
+        3.times do
+          changed_grid[y][x] = first_player_symbol
+          y+=1
+          x+=1
+          end
+          board.instance_variable_set(:@grid, changed_grid)
+        end
+          it "returns false" do
+            expect(board.check_diagonal).to be(false)
+          end
+    end
+    context "When combination is placed in top-left corner but not completed" do
+    before do
+      board.instance_variable_set(:@last_visited, [5,0])
+      changed_grid = board.instance_variable_get(:@grid)
+      y = 5
+      x = 0
+      3.times do
+        changed_grid[y][x] = first_player_symbol
+        y-=1
+        x+=1
+        end
+        board.instance_variable_set(:@grid, changed_grid)
+      end
+        it "returns false" do
+          expect(board.check_diagonal).to be(false)
+        end
   end
 end
 
 end
+

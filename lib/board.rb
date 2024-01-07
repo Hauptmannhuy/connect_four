@@ -7,18 +7,15 @@ class Board
     @empty_circle = "\u{25CB}"
     @first_player_symbol = "\u{25CF}".blue
     @second_player_symbol = "\u{25CF}".red
-    @grid = Array.new(6){ Array.new(6) { @empty_circle } }
+    @grid = Array.new(6){ Array.new(7) { @empty_circle } }
     @move_status = false
     @last_visited
   end
 
   def display_grid
-    puts "#{grid[5]}"
-    puts "#{grid[4]}"
-    puts "#{grid[3]}"
-    puts "#{grid[2]}"
-    puts "#{grid[1]}" 
-    puts "#{grid[0]}"
+    @grid.each do |row|
+      puts row.join
+    end
   end
 
   def switch_status
@@ -48,11 +45,11 @@ end
     loop do
       puts "Select column."
       input = gets.chomp.to_i
-      if input.between?(1,6)
+      if input.between?(1,7)
       verify_input = input_validation(input)
       return verify_input if verify_input
       else
-        puts "Input should only be between 1-6!"
+        puts "Input should only be between 1-7!"
       end
     end
   end
@@ -79,10 +76,12 @@ end
 
   def test
     changed_grid = self.instance_variable_get(:@grid)
-    i = 0
-    3.times do
-      changed_grid[0][i] = @first_player_symbol
-      i+=1
+    y = 5
+    x = 6
+    4.times do
+      changed_grid[y][x] = @first_player_symbol
+      y-=1
+      x-=1
       end
     self.instance_variable_set(:@grid, changed_grid)
     
@@ -105,14 +104,22 @@ end
     marker = @move_status == false ? @first_player_symbol : @second_player_symbol
     return true if grid[y+1][x] == marker && grid[y+2][x] == marker && grid[y+3][x] == marker
     false
+  end 
+
+  def check_diagonal
+    y,x = @last_visited
+    grid = @grid
+    marker = @move_status == false ? @first_player_symbol : @second_player_symbol
+    directions = [[1,1],[1,-1],[-1,1],[-1,-1]]
+    directions.each do |dy,dx|
+      sequences = (1..3).map{|i| grid[y+dy*i][x+dx*i] if (y+dy).between?(0,5) && (x+dx).between?(0,6) }
+      return true if sequences.all?(marker)
+    end
+      false
+    end
+    
   end
-  
-end
 
 board = Board.new
-
-
-
-
-board.player_move
 board.display_grid
+board.test
