@@ -1,9 +1,9 @@
 class Player
   attr_reader :name
+
   @@taken_names = []
   def initialize
     @name = nil
-
   end
 
   def set_name
@@ -19,9 +19,6 @@ class Player
   end
 
   def verify_name(name)
-    return name if !@@taken_names.include?(name)
+    name unless @@taken_names.include?(name)
   end
-
-  
-  
 end
