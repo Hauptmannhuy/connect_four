@@ -33,7 +33,7 @@ end
   context "When it's called" do
     it "sends message to #setup_player once" do
     player_instance = game_greeting.instance_variable_get(:@player_1)
-    expect(player_instance).to receive(:setup_player).once
+    expect(player_instance).to receive(:set_name).once
     game_greeting.greetings(player_instance)
     end
   end
@@ -54,9 +54,9 @@ end
   subject(:game_announcment){ described_class.new }
   context "When move status is false" do
     it "promts first player to make his move" do
-      result = game_announcment.move_announcment(false)
-        expect(result).to eq("It's first player turn!")
-  
+     message = "It's first player turn!"
+        expect(game_announcment).to receive(:puts).with(message)
+        game_announcment.move_announcment(false)
     end
   end
 end
@@ -111,9 +111,6 @@ describe Player do
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][1]).to eq(first_player_symbol)
       end
-      xit 'changes move_status to true' do
-        expect{ board.move_processes(0,1) }.to change { board.instance_variable_get(:@move_status) }.from(false).to(true)
-      end
     end
     context "When grid is all empty and move status is true and player moves" do
      before do
@@ -124,10 +121,6 @@ describe Player do
         board.move_processes(0,2)
         board_cell = board.instance_variable_get(:@grid)
         expect(board_cell[0][2]).to eq(second_player_symbol)
-      end
-      xit "changes move_status to false" do
-        board.instance_variable_set(:@move_status, true)
-        expect{ board.move_processes(0,2) }.to change { board.instance_variable_get(:@move_status) }.from(true).to(false)
       end
     end
     context "When grid has one filled cell in specific column and move status is true and user is trying to drop a circle to the same column" do
@@ -284,7 +277,7 @@ end
   subject(:board){ described_class.new }
   context "When win combination placed vertical" do
     before do
-      board.instance_variable_set(:@last_visited, [0,0])
+      board.instance_variable_set(:@last_visited, [3,0])
       changed_grid = board.instance_variable_get(:@grid)
       i = 0
       4.times do

@@ -13,9 +13,12 @@ class Board
   end
 
   def display_grid
-    @grid.each do |row|
-      puts row.join
-    end
+    i = 5
+   6.times do
+    puts @grid[i].join
+    i-=1
+   end
+    puts '1234567'
   end
 
   def switch_status
@@ -33,7 +36,6 @@ class Board
     if grid[y][x] == @empty_circle
       grid[y][x] = @move_status == false ? @first_player_symbol : @second_player_symbol
       @last_visited = [y,x]
-      # switch_status
       return
     else
       y+=1
@@ -74,17 +76,20 @@ end
        array.all?{| el | el != @empty_circle}
   end
 
-  def test
-    changed_grid = self.instance_variable_get(:@grid)
-    y = 5
-    x = 6
-    4.times do
-      changed_grid[y][x] = @first_player_symbol
-      y-=1
-      x-=1
-      end
-    self.instance_variable_set(:@grid, changed_grid)
-    
+  def is_win?
+     self.check_horizontal || self.check_diagonal || self.check_vertical
+  end
+
+  def is_tie?
+     @grid.each do |row|
+      if row.all?{|el| el != @empty_circle } && !is_win?
+      next
+     else
+      return false
+     end
+    end
+    puts "It's a tie!"
+    true
   end
 
   def check_horizontal
@@ -102,7 +107,11 @@ end
     y,x = @last_visited
     grid = @grid
     marker = @move_status == false ? @first_player_symbol : @second_player_symbol
-    return true if grid[y+1][x] == marker && grid[y+2][x] == marker && grid[y+3][x] == marker
+    directions = [[-1,0]]
+    directions.each do |dy,dx|
+      sequences = (1..3).map{| i | grid[y + dy * i][x + dx * i] if (y+dy*i).between?(0,5) && (x+dx*i).between?(0,6) }
+    return true if sequences.all?(marker)
+    end
     false
   end 
 
@@ -112,7 +121,7 @@ end
     marker = @move_status == false ? @first_player_symbol : @second_player_symbol
     directions = [[1,1],[1,-1],[-1,1],[-1,-1]]
     directions.each do |dy,dx|
-      sequences = (1..3).map{|i| grid[y+dy*i][x+dx*i] if (y+dy).between?(0,5) && (x+dx).between?(0,6) }
+      sequences = (1..3).map{|i| grid[y+dy*i][x+dx*i] if (y+dy*i).between?(0,5) && (x+dx*i).between?(0,6) }
       return true if sequences.all?(marker)
     end
       false
@@ -120,6 +129,4 @@ end
     
   end
 
-board = Board.new
-board.display_grid
-board.test
+

@@ -6,14 +6,11 @@ class Player
 
   end
 
-  def setup_player
-    set_name
-  end
-
   def set_name
     loop do
       input = gets.chomp
       if verify_name(input)
+        @@taken_names << input
         @name = input
         return
       end
